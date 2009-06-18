@@ -13,12 +13,15 @@ package ajedrez.cliente;
 
 import ajedrez.entidades.Tablero;
 import java.io.IOException;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author albertolemus
  */
 public class VtnJuego extends javax.swing.JFrame {
+
+    private Jugador jugador;
 
     public void bloquearJugador()
     {
@@ -39,25 +42,34 @@ public class VtnJuego extends javax.swing.JFrame {
     }
 
 
+    public void dibujarTablero(String tab){
+        jTextArea1.setText("");
+        jTextArea1.setText(tab);
+    }
+
+
     /** Creates new form VtnJuego */
     public VtnJuego(Jugador j){
         initComponents();
+        this.jugador = j;
         jLabel1.setText("Equipo "+j.getColor());
         bloquearJugador();
     }
 
-    public void listo(String color) {
+    public void listo() {
         jLabel3.setText("Jugando");
-        if (color.equals("blanco"))
-        {
-            desbloquearJugador();
-        }
+        desbloquearJugador();
     }
 
-    public void dibujarTablero(Tablero tab)
-    {
-        jTextArea1.setText(tab.toString());
+    void mensajeError(String string) {
+        //mandar error
+        JOptionPane.showMessageDialog(this, string, "Info", JOptionPane.OK_OPTION);
+        //System.out.println(string);
+        this.desbloquearJugador();
+
     }
+
+
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -72,11 +84,11 @@ public class VtnJuego extends javax.swing.JFrame {
         jTextArea1 = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
-        cmbPosX2 = new javax.swing.JComboBox();
-        cmbPosY2 = new javax.swing.JComboBox();
-        jLabel2 = new javax.swing.JLabel();
         cmbPosX = new javax.swing.JComboBox();
         cmbPosY = new javax.swing.JComboBox();
+        jLabel2 = new javax.swing.JLabel();
+        cmbPosX2 = new javax.swing.JComboBox();
+        cmbPosY2 = new javax.swing.JComboBox();
         jButton1 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
 
@@ -91,23 +103,28 @@ public class VtnJuego extends javax.swing.JFrame {
 
         jPanel1.setLayout(new java.awt.GridLayout(1, 0));
 
-        cmbPosX2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "C", "D", "E", "F", "G" }));
-        jPanel1.add(cmbPosX2);
-
-        cmbPosY2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6", "7", "8" }));
-        jPanel1.add(cmbPosY2);
-
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("-->");
-        jPanel1.add(jLabel2);
-
-        cmbPosX.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "A", "B", "C", "D", "E", "F", "G" }));
+        cmbPosX.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "a", "b", "c", "d", "e", "f", "g", "h" }));
         jPanel1.add(cmbPosX);
 
         cmbPosY.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6", "7", "8" }));
         jPanel1.add(cmbPosY);
 
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("-->");
+        jPanel1.add(jLabel2);
+
+        cmbPosX2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "a", "b", "c", "d", "e", "f", "g", "h" }));
+        jPanel1.add(cmbPosX2);
+
+        cmbPosY2.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "1", "2", "3", "4", "5", "6", "7", "8" }));
+        jPanel1.add(cmbPosY2);
+
         jButton1.setText("Mover");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel3.setText("Esperando jugador");
@@ -148,6 +165,22 @@ public class VtnJuego extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        if (this.jugador.mover(this.cmbPosX.getSelectedItem().toString().toCharArray()[0],
+                Integer.parseInt(this.cmbPosY.getSelectedItem().toString()),
+                this.cmbPosX2.getSelectedItem().toString().toCharArray()[0],
+                Integer.parseInt(this.cmbPosY2.getSelectedItem().toString())))
+        {
+            //Bloqueo al jugador
+            this.bloquearJugador();
+        }
+        else{
+            //Mandar mensaje de error, la conexion fallo
+        }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cmbPosX;

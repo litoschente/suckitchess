@@ -16,7 +16,7 @@ public class Caballo extends IPieza{
 
     public String toString()
     {
-        return " C."+color.charAt(0);
+        return " C["+color.charAt(0)+"] ";
     }
 
     public boolean mover(char posX, int posY, char posX2, int posY2) {

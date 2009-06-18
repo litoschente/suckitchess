@@ -15,7 +15,7 @@ public class Peon extends IPieza{
 
     public String toString()
     {
-        return " P."+color.charAt(0);
+        return " P["+color.charAt(0)+"] ";
     }
 
     public boolean mover(char posX, int posY, char posX2, int posY2) {
@@ -23,17 +23,29 @@ public class Peon extends IPieza{
         PosChar posx2 = tc.transformarCaracter(posX2);
         if ((posx!=null)&&(posx2!=null))
         {
-            if (color.equals("blanco"))
+            if (color.equals("negro"))
             {
-                if ((posx.equals(posx2))&&(posY2==(posY-1)))
+                if (posx.equals(posx2))
                 {
-                    return true;
+                    if(posY2==(posY-1))
+                    {
+                        return true;
+                    }else if ((posY2==(posY-2))&&(posY==7))
+                    {
+                        return true;
+                    }
                 }
-            }else if(color.equals("negro"))
+            }else if(color.equals("blanco"))
             {
-                if ((posx.equals(posx2))&&(posY2==(posY+1)))
+                if (posx.equals(posx2))
                 {
-                    return true;
+                    if(posY2==(posY+1))
+                    {
+                        return true;
+                    }else if ((posY2==(posY+2))&&(posY==2))
+                    {
+                        return true;
+                    }
                 }
             }
         }

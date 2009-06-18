@@ -16,7 +16,7 @@ public class Alfil extends IPieza {
 
     public String toString()
     {
-        return " A."+color.charAt(0);
+        return " A["+color.charAt(0)+"] ";
     }
 
     public boolean mover(char posX, int posY, char posX2, int posY2) {
