@@ -17,9 +17,9 @@ public class test {
     {
         Tablero t = new Tablero();
         System.out.println(t.toString());
-        t.mover('e', 2, 'e', 3);
+       // t.mover('e', 2, 'e', 3);
         System.out.println(t.toString());
-        t.mover('c',1,'f',4);
+        //t.mover('c',1,'f',4);
         System.out.println(t.toString());
 
     }

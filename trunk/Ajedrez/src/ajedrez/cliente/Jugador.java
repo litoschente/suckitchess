@@ -5,14 +5,13 @@
 
 package ajedrez.cliente;
 
+import ajedrez.entidades.Mensaje;
 import ajedrez.entidades.Tablero;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -29,6 +28,7 @@ public class Jugador implements Runnable{
     private String color;
     private VtnJuego game;
     private VtnConfig conf;
+    private String tablero;
 
     boolean die=false;
     String tst = "hola";
@@ -49,10 +49,14 @@ public class Jugador implements Runnable{
         } catch (IOException ex) {
             return false;
         }
+
         Object response = null;
+
         try {
+            System.out.println("conectado");
             oOutput = new ObjectOutputStream(socket.getOutputStream());
             oInput = new ObjectInputStream(socket.getInputStream());
+            System.out.println("esperando respuesta del servidor");
             response = oInput.readObject();
         } catch (ClassNotFoundException ex) {
             return false;
@@ -60,16 +64,23 @@ public class Jugador implements Runnable{
             return false;
         }
 
-        if (response instanceof String)
+        if (response instanceof Mensaje)
         {
-            String resp = (String)response;
-            if (resp.equals("blanco")||resp.equals("negro"))
+            System.out.println("mensaje recibido");
+            Mensaje resp = (Mensaje) response;
+
+            if (resp.getTipoMensaje().equals("color"))
             {
-                color = resp;
+                color = resp.getMensaje();
+                this.tablero = resp.getTablero();
                 return true;
             }
         }
         return false;
+    }
+
+    public void setTablero(String tab){
+        this.game.dibujarTablero(tab);
     }
 
     public Tablero getTablero() throws IOException, ClassNotFoundException
@@ -87,7 +98,21 @@ public class Jugador implements Runnable{
 
     public boolean mover(char posX, int posY, char posX2, int posY2)
     {
-        return true;
+        boolean ok = false;
+
+        try {
+            //Aqui iria el WriteObject
+            Mensaje mens = new Mensaje("mover", posX + ":" + posY + ":" + posX2
+                    + ":" + posY2, null);
+            this.oOutput.writeObject(mens);
+            ok = true;
+
+        } catch (IOException ex) {
+            ok = false;
+            //Logger.getLogger(Jugador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return ok;
     }
 
     /**
@@ -105,46 +130,80 @@ public class Jugador implements Runnable{
         return color;
     }
 
-    public boolean esperar() throws IOException, ClassNotFoundException {
-        Object o = oInput.readObject();
-        if (o instanceof String)
-        {
-            String msg = (String)o;
-            if (msg.equals("LISTO"))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean esperar() throws IOException, ClassNotFoundException {
+//        Object o = oInput.readObject();
+//        if (o instanceof String)
+//        {
+//            String msg = (String)o;
+//            if (msg.equals("LISTO"))
+//            {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     public void run() {
         while ((!(conectar()))&&(!(die)))
         {
-            System.out.println(tst);
+            System.out.println("intentando conectar");
         }
+
         if (die)
-        {}else
+        {
+        }
+        else
         {
             conf.setVisible(false);
             game=new VtnJuego(this);
             game.setVisible(true);
-            try {
-                Object o = oInput.readObject();
-                if (o instanceof String)
-                {
-                    String x = (String) o;
-                    if (x.equals("LISTO"))
+            game.dibujarTablero(this.tablero);
+
+            while(true)
+            {
+                try {
+                    Object o = oInput.readObject();
+
+                    if (o instanceof Mensaje)
                     {
-                        game.listo(getColor());
+                        if ( ((Mensaje)o).getTipoMensaje().equals("turno"))
+                        {
+                            game.listo();
+                            game.dibujarTablero(((Mensaje)o).getTablero());
+                        }
+                        else if ( ((Mensaje)o).getTipoMensaje().equals("mover") )
+                        {
+                            //Aqui se dibuja el tablero
+                            //Si es true dibuja el tablero y bloquea
+                            //Si es false sigue desbloqueado y mandar mensaje de error
+                            //para que sepa que no se puede mover
+
+                            if (((Mensaje)o).getMensaje().equals("true")){
+                                //Dibujar el tablero
+                                this.game.dibujarTablero(((Mensaje)o).getTablero());
+                                this.game.bloquearJugador();
+                            }
+                            else{
+                                //Movimiento invalido
+                                this.game.mensajeError("Movimiento Invalido.");
+                            }
+                        }
+                        else if ( ((Mensaje)o).getTipoMensaje().equals("fin") )
+                        {
+                            //Fin del juego
+                        }
+
                     }
-                    game.dibujarTablero(getTablero());
+
+                } catch (IOException ex) {
+                    die = true;
+                } catch (ClassNotFoundException ex) {
+                    die = true;
                 }
-            } catch (IOException ex) {
-                die = true;
-            } catch (ClassNotFoundException ex) {
-                die = true;
+
             }
+
+
 
         }
     }

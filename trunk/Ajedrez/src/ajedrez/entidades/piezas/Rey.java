@@ -15,7 +15,7 @@ import ajedrez.entidades.PosChar;
 public class Rey extends IPieza{
     public String toString()
     {
-        return "Ry."+color.charAt(0);
+        return "Ry["+color.charAt(0)+"] ";
     }
     public boolean mover(char posX, int posY, char posX2, int posY2) {
         PosChar posx = tc.transformarCaracter(posX);

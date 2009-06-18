@@ -5,13 +5,12 @@
 
 package ajedrez.servidor;
 
+import ajedrez.entidades.Mensaje;
 import ajedrez.entidades.Tablero;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -29,12 +28,16 @@ public class Partida implements Runnable{
     private String turno = "blanco";
 
     boolean control=true;
+
     public void run()
     {
-        tablero = new Tablero();
+        //tablero = new Tablero();
         try {
-            oOutput1.writeObject(new String("LISTO"));
-            oOutput2.writeObject(new String("LISTO"));
+            //oOutput1.writeObject(new String("LISTO"));
+            //oOutput2.writeObject(new String("LISTO"));
+
+            oOutput1.writeObject(new Mensaje("turno",null,this.getTablero().toString()));
+
             //en vez de mandar listo, enviar el tablero XD
         } catch (IOException ex) {
         //    Logger.getLogger(Partida.class.getName()).log(Level.SEVERE, null, ex);
@@ -56,15 +59,43 @@ public class Partida implements Runnable{
         ObjectOutputStream out = turno.equals("blanco")?oOutput1:oOutput2;
         ObjectOutputStream out2 = turno.equals("blanco")?oOutput2:oOutput1;
         Object msg = in.readObject();
-        if (msg instanceof String)
-        {
-            String msj = (String)msg;
-            System.out.println(msj);
-            if (msj.equals("getTablero"))
-            {
-                System.out.println("aja");
-                out.writeObject(getTablero());
 
+        if (msg instanceof Mensaje)
+        {
+            Mensaje msj = (Mensaje) msg;
+
+            if (msj.getTipoMensaje().equals("mover"))
+            {
+                String movimiento = msj.getMensaje();
+                String[] tokens = movimiento.split(":");
+                System.out.println(movimiento);
+                for (String string : tokens) {
+                    System.out.println(string);
+                }
+                boolean ok = false;
+                ok = this.tablero.mover(tokens[0].toCharArray()[0],
+                        Integer.parseInt(tokens[1]),
+                        tokens[2].toCharArray()[0],
+                        Integer.parseInt(tokens[3]), turno);
+
+                Mensaje salida = null;
+                if (ok){
+                    //Mando el mensaje y el tablero nuevo
+                    salida = new Mensaje("mover","true",this.tablero.toString());
+                    out.writeObject(salida);
+                    salida = new Mensaje("turno",null,this.tablero.toString());
+                    out2.writeObject(salida);
+                    this.turno = this.turno.equals("blanco")?"negro":"blanco";
+                }
+                else
+                {
+                    //No puede mover
+                    salida = new Mensaje("mover","false",null);
+                    out.writeObject(salida);
+                }
+            }
+            else if (msj.getTipoMensaje().equals("fin")){
+                //FIN
             }
         }
 
@@ -78,7 +109,8 @@ public class Partida implements Runnable{
         this.jugador1 = jugador1;
         oOutput1 = new ObjectOutputStream(this.jugador1.getOutputStream());
         oInput1 = new ObjectInputStream(this.jugador1.getInputStream());
-        oOutput1.writeObject(new String("blanco"));
+        System.out.println("usuario con el ip: "+jugador1.getInetAddress()+" -> blanco");
+        oOutput1.writeObject(new Mensaje("color","blanco",this.tablero.toString()));
     }
 
     private Socket getJugador2() {
@@ -89,7 +121,8 @@ public class Partida implements Runnable{
         this.jugador2 = jugador2;
         oOutput2 = new ObjectOutputStream(this.jugador2.getOutputStream());
         oInput2 = new ObjectInputStream(this.jugador2.getInputStream());
-        oOutput2.writeObject(new String("negro"));
+        System.out.println("usuario con el ip: "+jugador1.getInetAddress()+" -> negro");
+        oOutput2.writeObject(new Mensaje("color","negro",this.tablero.toString()));
     }
 
     private Tablero getTablero() {
@@ -97,4 +130,7 @@ public class Partida implements Runnable{
         return tablero;
     }
 
+    public Partida(){
+        tablero = new Tablero();
+    }
 }

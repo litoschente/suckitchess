@@ -23,6 +23,7 @@ public class Servidor{
     public static void main(String args[]) {
         try {
             serv = new ServerSocket(NRO_PUERTO);
+            System.out.println("servidor iniciado");
             List<Thread> hilos = new ArrayList<Thread>();
             while(true)
             {
@@ -36,7 +37,7 @@ public class Servidor{
                 hilos.add(hilo);
             }
         } catch (IOException ex) {
-
+            
         }
     }
 
