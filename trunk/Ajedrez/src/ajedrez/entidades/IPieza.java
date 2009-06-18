@@ -15,6 +15,7 @@ public abstract class IPieza implements Serializable {
 
     protected String color;
     protected TransformarCaracter tc = new TransformarCaracter();
+    protected String imagen;
 
     public abstract boolean mover(char posX, int posY, char posX2, int posY2);
 
@@ -30,6 +31,20 @@ public abstract class IPieza implements Serializable {
      */
     public void setColor(String color) {
         this.color = color;
+    }
+
+    /**
+     * @return the imagen
+     */
+    public String getImagen() {
+        return imagen;
+    }
+
+    /**
+     * @param imagen the imagen to set
+     */
+    public void setImagen(String imagen) {
+        this.imagen = imagen;
     }
 
     //letra-numero

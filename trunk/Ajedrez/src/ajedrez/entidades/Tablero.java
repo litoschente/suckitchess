@@ -22,44 +22,26 @@ public class Tablero implements Serializable{
 
     public Tablero()
     {
-        grid[0][0]=new Torre();
-        grid[0][0].setColor("negro");
-        grid[0][1]=new Caballo();
-        grid[0][1].setColor("negro");
-        grid[0][2]=new Alfil();
-        grid[0][2].setColor("negro");
-        grid[0][3]=new Reina();
-        grid[0][3].setColor("negro");
-        grid[0][4]=new Rey();
-        grid[0][4].setColor("negro");
-        grid[0][5]=new Alfil();
-        grid[0][5].setColor("negro");
-        grid[0][6]=new Caballo();
-        grid[0][6].setColor("negro");
-        grid[0][7]=new Torre();
-        grid[0][7].setColor("negro");
+        grid[0][0]=new Torre("negro");
+        grid[0][1]=new Caballo("negro");
+        grid[0][2]=new Alfil("negro");
+        grid[0][3]=new Reina("negro");
+        grid[0][4]=new Rey("negro");
+        grid[0][5]=new Alfil("negro");
+        grid[0][6]=new Caballo("negro");
+        grid[0][7]=new Torre("negro");
         for (int i = 0; i < grid.length; i++) {
-            grid[1][i]=new Peon();
-            grid[1][i].setColor("negro");
-            grid[6][i]=new Peon();
-            grid[6][i].setColor("blanco");
+            grid[1][i]=new Peon("negro");
+            grid[6][i]=new Peon("blanco");
         }
-        grid[7][0]=new Torre();
-        grid[7][0].setColor("blanco");
-        grid[7][1]=new Caballo();
-        grid[7][1].setColor("blanco");
-        grid[7][2]=new Alfil();
-        grid[7][2].setColor("blanco");
-        grid[7][3]=new Reina();
-        grid[7][3].setColor("blanco");
-        grid[7][4]=new Rey();
-        grid[7][4].setColor("blanco");
-        grid[7][5]=new Alfil();
-        grid[7][5].setColor("blanco");
-        grid[7][6]=new Caballo();
-        grid[7][6].setColor("blanco");
-        grid[7][7]=new Torre();
-        grid[7][7].setColor("blanco");
+        grid[7][0]=new Torre("blanco");
+        grid[7][1]=new Caballo("blanco");
+        grid[7][2]=new Alfil("blanco");
+        grid[7][3]=new Reina("blanco");
+        grid[7][4]=new Rey("blanco");
+        grid[7][5]=new Alfil("blanco");
+        grid[7][6]=new Caballo("blanco");
+        grid[7][7]=new Torre("blanco");
     }
 
     public boolean mover(char posY, int posX, char posY2, int posX2, String turno) {
@@ -87,17 +69,30 @@ public class Tablero implements Serializable{
     {
         String ret="";
         for (int i = 0; i < grid.length; i++) {
+            ret+="    ----- ----- ----- ------ ------ ----- ----- ----- \n";
             for (int j = 0; j < grid.length; j++) {
+                if (j==0)
+                {
+                    ret+=8-i+"  ";
+                }
+                ret+="|";
+
                 if (grid[i][j]!=null)
                 {
-                    ret+=grid[i][j].toString()+"   ";
+                    if ((j==3)||(j==4))
+                    {
+                        ret+=" ";
+                    }
+                    ret+=" "+grid[i][j].toString()+" ";
                 }else
                 {
-                    ret+=" ---- ";
+                    ret+="  ---  ";
                 }
             }
-            ret+="\n";
+            ret+="|\n";
         }
+        ret+="    ----- ----- ----- ------ ------ ----- ----- ----- ";
+        ret+="\n       A         B        C         D         E           F         G         H      ";
         return ret;
     }
 

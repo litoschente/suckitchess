@@ -14,9 +14,14 @@ import ajedrez.entidades.PosChar;
  */
 public class Alfil extends IPieza {
 
+    public Alfil(String color) {
+        setColor(color);
+        imagen="src/recursos/icons/alfil"+color+".gif";
+    }
+
     public String toString()
     {
-        return " A["+color.charAt(0)+"] ";
+        return "A_["+color.charAt(0)+"]";
     }
 
     public boolean mover(char posX, int posY, char posX2, int posY2) {
