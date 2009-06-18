@@ -14,9 +14,16 @@ import ajedrez.entidades.PosChar;
  */
 public class Reina extends IPieza{
 
+    public Reina(String color) {
+                setColor(color);
+        imagen="src/recursos/icons/reina"+color+".gif";
+    }
+
+
+
     public String toString()
     {
-        return "Ra["+color.charAt(0)+"] ";
+        return "Ra["+color.charAt(0)+"]";
     }
 
     public boolean mover(char posX, int posY, char posX2, int posY2) {

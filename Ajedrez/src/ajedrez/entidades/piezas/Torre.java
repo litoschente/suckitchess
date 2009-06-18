@@ -13,9 +13,16 @@ import ajedrez.entidades.PosChar;
  * @author albertolemus
  */
 public class Torre extends IPieza {
+
+    public Torre(String color) {
+        setColor(color);
+    imagen="src/recursos/icons/torre"+color+".gif";
+    }
+
+
     public String toString()
     {
-        return "  T["+color.charAt(0)+"]  ";
+        return "T_["+color.charAt(0)+"]";
     }
 
     public boolean mover(char posX, int posY, char posX2, int posY2) {

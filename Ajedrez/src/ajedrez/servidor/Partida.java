@@ -27,15 +27,17 @@ public class Partida implements Runnable{
     private ObjectInputStream oInput2;
     private String turno = "blanco";
 
+    private VtnTab tab;
+
     boolean control=true;
 
     public void run()
     {
         //tablero = new Tablero();
         try {
-            //oOutput1.writeObject(new String("LISTO"));
-            //oOutput2.writeObject(new String("LISTO"));
-
+            tab = new VtnTab(tablero);
+            Thread v = new Thread(tab);
+            v.start();
             oOutput1.writeObject(new Mensaje("turno",null,this.getTablero().toString()));
 
             //en vez de mandar listo, enviar el tablero XD
@@ -80,6 +82,7 @@ public class Partida implements Runnable{
 
                 Mensaje salida = null;
                 if (ok){
+                    tab.setNewCanvas(tablero);
                     //Mando el mensaje y el tablero nuevo
                     salida = new Mensaje("mover","true",this.tablero.toString());
                     out.writeObject(salida);

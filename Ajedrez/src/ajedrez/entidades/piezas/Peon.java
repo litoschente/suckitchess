@@ -13,9 +13,17 @@ import ajedrez.entidades.*;
  */
 public class Peon extends IPieza{
 
+    public Peon(String color) {
+                setColor(color);
+        imagen="src/recursos/icons/peon"+color+".gif";
+
+    }
+
+
+
     public String toString()
     {
-        return " P["+color.charAt(0)+"] ";
+        return "P_["+color.charAt(0)+"]";
     }
 
     public boolean mover(char posX, int posY, char posX2, int posY2) {

@@ -13,9 +13,16 @@ import ajedrez.entidades.PosChar;
  * @author albertolemus
  */
 public class Rey extends IPieza{
+
+    public Rey(String color) {
+        setColor(color);
+        imagen="src/recursos/icons/rey"+color+".gif";
+    }
+
+
     public String toString()
     {
-        return "Ry["+color.charAt(0)+"] ";
+        return "Ry["+color.charAt(0)+"]";
     }
     public boolean mover(char posX, int posY, char posX2, int posY2) {
         PosChar posx = tc.transformarCaracter(posX);
